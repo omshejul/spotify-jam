@@ -7,14 +7,14 @@ export default function UserProfile() {
   const { data: session } = useSession()
 
   return (
-    <div className="flex items-center gap-6 p-6 justify-between w-full rounded-2xl border border-gray-200 dark:border-gray-800">
+    <div className="flex items-center p-6 justify-between w-full rounded-2xl border border-gray-200 dark:border-gray-800">
       <div className="flex items-center gap-4">
         {session?.user?.image && (
           <Image
             src={session.user.image}
             alt="Profile picture"
-            width={64}
-            height={64}
+            width={48}
+            height={48}
             className="rounded-full"
             priority
           />

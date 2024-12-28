@@ -19,3 +19,9 @@ body {
   background: var(--background);
   font-family: var(--font-figtree), system-ui, sans-serif;
 }
+@media (max-width: 768px) {
+  :root {
+    font-size: 0.8rem;
+  }
+}
+
