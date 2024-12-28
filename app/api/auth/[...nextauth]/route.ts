@@ -5,9 +5,6 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   throw new Error('Missing Google OAuth credentials');
 }
 
-if (!process.env.APPLE_CLIENT_ID || !process.env.APPLE_CLIENT_SECRET) {
-  throw new Error('Missing Apple OAuth credentials');
-}
 
 const handler = NextAuth({
   providers: [
