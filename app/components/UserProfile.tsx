@@ -19,7 +19,7 @@ export default function UserProfile() {
             priority
           />
         )}
-        <div className="flex flex-col items-start gap-2">
+        <div className="flex flex-col items-start">
           <h2 className="text-xl font-semibold">{session?.user?.name}</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {session?.user?.email}

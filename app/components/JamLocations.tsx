@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { FiPlusCircle, FiEdit, FiExternalLink, FiLoader, FiSave, FiTrash, FiX } from 'react-icons/fi'
 import { JamLocation } from '../types/types'
 import AddLocationModal from './AddLocationModal'
+import Link from 'next/link'
 
 export default function JamLocations() {
     const { data: session } = useSession()
@@ -147,7 +148,12 @@ export default function JamLocations() {
                             key={location._id}
                             className="p-4 border rounded-2xl border-solid border-black/[.08] dark:border-white/[.145] space-y-2"
                         >
-                            <h3 className="text-lg font-semibold">{location.name}</h3>
+                            <Link 
+                                href={`/locations/${location.name.toLowerCase().replace(/\s+/g, '-')}`}
+                                className="hover:text-blue-500 transition-colors"
+                            >
+                                <h3 className="text-lg font-semibold">{location.name}</h3>
+                            </Link>
                             <div className="flex justify-between gap-2">
                                 {editingId !== location._id ? (
                                     <a
@@ -156,7 +162,7 @@ export default function JamLocations() {
                                         rel="noopener noreferrer"
                                         className="flex items-center justify-center p-3 px-4 rounded-2xl border border-solid border-black/[.08] dark:border-white/[.145] text-blue-500 hover:text-blue-700"
                                     >
-                                        {location.jamLink.length > 25 ? `${location.jamLink.substring(0, 25)}...` : location.jamLink} <FiExternalLink />
+                                        {location.jamLink.length > 25 ? `${location.jamLink.replace('https://', '').substring(0, 25)}...` : location.jamLink.replace('https://', '')} <FiExternalLink />
                                     </a>
                                 ) : (
                                     <div className="flex gap-2 items-center justify-between w-full">
