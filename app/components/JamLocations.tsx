@@ -9,7 +9,7 @@ import AddLocationModal from './AddLocationModal'
 export default function JamLocations() {
     const { data: session } = useSession()
     const [locations, setLocations] = useState<JamLocation[]>([])
-    const [newLocation, setNewLocation] = useState({ name: '', jamLink: '' })
+    // const [newLocation, setNewLocation] = useState({ name: '', jamLink: '' })
     const [error, setError] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [isSubmitting, setIsSubmitting] = useState(false) // Added to track form submission state

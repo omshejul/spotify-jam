@@ -35,7 +35,7 @@ export async function PATCH(
     }
 
     return NextResponse.json(result)
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to update location' }, { status: 500 })
   }
 }
@@ -69,7 +69,7 @@ export async function DELETE(
     await db.collection('locations').deleteOne({ _id: new ObjectId(id) })
     
     return NextResponse.json({ success: true })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to delete location' }, { status: 500 })
   }
 } 
