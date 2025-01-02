@@ -1,9 +1,22 @@
-import { notFound } from 'next/navigation'
+import BottomNav from '@/app/components/BottomNav'
+import EditJamLink from '@/app/components/EditJamLink'
 import { connectToDatabase } from '@/app/lib/mongodb'
-import { FiEdit, FiExternalLink } from 'react-icons/fi'
-import QRCode from 'qrcode'
-import Link from 'next/link'
+import { ObjectId } from 'mongodb'
 import Image from 'next/image'
+import { notFound } from 'next/navigation'
+import QRCode from 'qrcode'
+import { FiExternalLink } from 'react-icons/fi'
+
+interface Location {
+    _id: ObjectId
+    name: string
+    jamLink: string
+    createdBy: string
+    createdByName: string
+    updatedBy: string
+    updatedByName: string
+    updatedAt: Date
+}
 
 type PageProps = {
     params: Promise<{ slug: string }>
@@ -14,7 +27,7 @@ async function getLocationBySlug(slug: string) {
     const location = await db.collection('locations').findOne({
         name: { $regex: new RegExp('^' + slug.replace(/-/g, ' ') + '$', 'i') }
     })
-    return location
+    return location as Location | null
 }
 
 async function generateQR(text: string) {
@@ -40,24 +53,38 @@ export default async function LocationPage({ params }: PageProps) {
         notFound()
     }
 
-    const qrCodeDataUrl = await generateQR(location.jamLink)
+    const locationData = {
+        ...location,
+        _id: location._id.toString(),
+        updatedAt: new Date(location.updatedAt)
+    }
+
+    const qrCodeDataUrl = await generateQR(locationData.jamLink)
 
     return (<div className="flex flex-col items-center justify-between min-h-svh p-6">
         <div className="container mx-auto px-4 max-w-2xl">
             <div className="bg-white dark:bg-black p-6 rounded-2xl border border-solid border-black/[.08] dark:border-white/[.145]">
-                <h1 className="text-3xl font-bold mb-4">{location.name}</h1>
+                <h1 className="text-3xl font-bold mb-4">{locationData.name}</h1>
                 
                 <div className="space-y-4">
                     <div>
                         <h2 className="text-xl font-semibold mb-2">Jam Link</h2>
-                        <a 
-                            href={location.jamLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-500 hover:text-blue-700 flex items-center gap-2"
-                        >
-                            {location.jamLink} <FiExternalLink />
-                        </a>
+                        <div className="flex flex-col">
+                            <a 
+                                href={locationData.jamLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-500 hover:text-blue-700 flex items-center gap-2"
+                            >
+                                {locationData.jamLink} <FiExternalLink />
+                            </a>
+                            <EditJamLink 
+                                locationId={locationData._id}
+                                jamLink={locationData.jamLink}
+                                createdBy={locationData.createdBy}
+                                slug={slug}
+                            />
+                        </div>
                     </div>
 
                     {qrCodeDataUrl && (
@@ -100,14 +127,8 @@ export default async function LocationPage({ params }: PageProps) {
                 </div>
             </div>
         </div>
-
-        <Link
-            href="/"
-            className="rounded-2xl border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-        >
-            <FiEdit className="mr-2" /> Go home to edit
-        </Link>
-    </div>
-
-    )
+        <div className=" grid place-items-center w-full container mx-auto px-4 max-w-2xl">
+        <BottomNav />
+        </div>
+    </div>)
 } 
