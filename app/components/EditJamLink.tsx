@@ -3,16 +3,15 @@
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { FiEdit, FiSave, FiX } from 'react-icons/fi'
+import { FiEdit, FiLoader, FiSave, FiX } from 'react-icons/fi'
 
 interface EditJamLinkProps {
     locationId: string
     jamLink: string
     createdBy: string
-    slug: string
 }
 
-export default function EditJamLink({ locationId, jamLink, createdBy, slug }: EditJamLinkProps) {
+export default function EditJamLink({ locationId, jamLink, createdBy }: EditJamLinkProps) {
     const router = useRouter()
     const { data: session } = useSession()
     const [isEditing, setIsEditing] = useState(false)
@@ -35,9 +34,8 @@ export default function EditJamLink({ locationId, jamLink, createdBy, slug }: Ed
             })
 
             if (response.ok) {
-                const updatedLocation = await response.json()
+                await response.json()
                 setIsEditing(false)
-                // Refresh the page data
                 router.refresh()
             }
         } catch (error) {
@@ -67,7 +65,11 @@ export default function EditJamLink({ locationId, jamLink, createdBy, slug }: Ed
                         disabled={isSubmitting}
                         className="px-4 py-2 dark:text-white border-2 border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl hover:bg-green-500 transition-colors duration-300 ease-in-out"
                     >
-                        <FiSave />
+                        {isSubmitting ? (
+                            <FiLoader className="w-5 h-5 animate-spin" />
+                        ) : (
+                            <FiSave />
+                        )}
                     </button>
                     <button
                         onClick={() => {

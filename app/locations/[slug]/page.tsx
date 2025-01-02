@@ -82,7 +82,6 @@ export default async function LocationPage({ params }: PageProps) {
                                 locationId={locationData._id}
                                 jamLink={locationData.jamLink}
                                 createdBy={locationData.createdBy}
-                                slug={slug}
                             />
                         </div>
                     </div>
