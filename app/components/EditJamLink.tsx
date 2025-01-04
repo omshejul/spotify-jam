@@ -11,7 +11,7 @@ interface EditJamLinkProps {
     createdBy: string
 }
 
-export default function EditJamLink({ locationId, jamLink, createdBy }: EditJamLinkProps) {
+export default function EditJamLink({ locationId, jamLink }: EditJamLinkProps) {
     const router = useRouter()
     const { data: session } = useSession()
     const [isEditing, setIsEditing] = useState(false)
