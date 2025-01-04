@@ -7,8 +7,6 @@ import { FiEdit, FiExternalLink, FiLoader, FiPlusCircle, FiSave, FiTrash, FiX } 
 import { JamLocation } from '../types/types'
 import AddLocationModal from './AddLocationModal'
 
-const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL
-
 export default function JamLocations() {
     const { data: session } = useSession()
     const [locations, setLocations] = useState<JamLocation[]>([])
@@ -20,6 +18,7 @@ export default function JamLocations() {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const router = useRouter()
     const [loadingLocation, setLoadingLocation] = useState<string | null>(null)
+    const [isAdmin, setIsAdmin] = useState(false)
 
     useEffect(() => {
         const fetchLocations = async () => {
@@ -38,6 +37,17 @@ export default function JamLocations() {
 
         fetchLocations()
     }, [])
+
+    useEffect(() => {
+        const checkAdminStatus = async () => {
+            if (session?.user) {
+                const response = await fetch('/api/auth/check-admin')
+                const data = await response.json()
+                setIsAdmin(data.isAdmin)
+            }
+        }
+        checkAdminStatus()
+    }, [session])
 
     if (isLoading) {
         return (
@@ -132,7 +142,7 @@ export default function JamLocations() {
 
     const canDelete = (createdBy: string) => {
         if (!session?.user?.email) return false
-        return session.user.email === createdBy || session.user.email === ADMIN_EMAIL
+        return session.user.email === createdBy || isAdmin
     }
 
     return (
