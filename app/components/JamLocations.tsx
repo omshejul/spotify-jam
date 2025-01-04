@@ -1,11 +1,11 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { FiPlusCircle, FiEdit, FiExternalLink, FiLoader, FiSave, FiTrash, FiX } from 'react-icons/fi'
+import { FiEdit, FiExternalLink, FiLoader, FiPlusCircle, FiSave, FiTrash, FiX } from 'react-icons/fi'
 import { JamLocation } from '../types/types'
 import AddLocationModal from './AddLocationModal'
-import Link from 'next/link'
 
 export default function JamLocations() {
     const { data: session } = useSession()
@@ -16,6 +16,8 @@ export default function JamLocations() {
     const [isSubmitting, setIsSubmitting] = useState(false) // Added to track form submission state
     const [editingId, setEditingId] = useState<string | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const router = useRouter()
+    const [loadingLocation, setLoadingLocation] = useState<string | null>(null)
 
     useEffect(() => {
         const fetchLocations = async () => {
@@ -121,6 +123,11 @@ export default function JamLocations() {
         }
     }
 
+    const handleLocationClick = (locationName: string) => {
+        setLoadingLocation(locationName)
+        router.push(`/locations/${locationName.toLowerCase().replace(/\s+/g, '-')}`)
+    }
+
     return (
         <>
 
@@ -148,12 +155,16 @@ export default function JamLocations() {
                             key={location._id}
                             className="p-4 border rounded-2xl border-solid border-black/[.08] dark:border-white/[.145] space-y-2"
                         >
-                            <Link 
-                                href={`/locations/${location.name.toLowerCase().replace(/\s+/g, '-')}`}
-                                className="hover:text-blue-500 transition-colors"
+                            <button 
+                                onClick={() => handleLocationClick(location.name)}
+                                className="hover:text-blue-500 transition-colors flex items-center gap-2"
+                                disabled={loadingLocation === location.name}
                             >
                                 <h3 className="text-lg font-semibold">{location.name}</h3>
-                            </Link>
+                                {loadingLocation === location.name && (
+                                    <FiLoader className="w-4 h-4 animate-spin" />
+                                )}
+                            </button>
                             <div className="flex justify-between gap-2">
                                 {editingId !== location._id ? (
                                     <a
