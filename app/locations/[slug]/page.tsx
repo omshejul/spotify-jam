@@ -113,15 +113,20 @@ export default async function LocationPage({ params }: PageProps) {
 
                     <div>
                         <h2 className="text-xl font-semibold mb-2">Last Updated</h2>
-                        <p>
-                            By {location.updatedByName} on{' '}
-                            {new Date(location.updatedAt).toLocaleDateString()} at{' '}
-                            {new Date(location.updatedAt).toLocaleTimeString('en-US', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: false
-                            })}
-                        </p>
+                       <p>
+    By {location.updatedByName} on{' '}
+    {new Date(location.updatedAt).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    })}{' '}
+    at{' '}
+    {new Date(location.updatedAt).toLocaleTimeString(undefined, {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    })}
+</p>
                     </div>
                 </div>
             </div>
