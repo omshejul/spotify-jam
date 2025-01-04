@@ -7,6 +7,8 @@ import { FiEdit, FiExternalLink, FiLoader, FiPlusCircle, FiSave, FiTrash, FiX } 
 import { JamLocation } from '../types/types'
 import AddLocationModal from './AddLocationModal'
 
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL
+
 export default function JamLocations() {
     const { data: session } = useSession()
     const [locations, setLocations] = useState<JamLocation[]>([])
@@ -128,9 +130,13 @@ export default function JamLocations() {
         router.push(`/locations/${locationName.toLowerCase().replace(/\s+/g, '-')}`)
     }
 
+    const canDelete = (createdBy: string) => {
+        if (!session?.user?.email) return false
+        return session.user.email === createdBy || session.user.email === ADMIN_EMAIL
+    }
+
     return (
         <>
-
             <div className="w-full max-w-2xl space-y-6">
                 {session?.user && (
                     <>
@@ -196,7 +202,7 @@ export default function JamLocations() {
                                         </button>
                                     </div>
                                 )}
-                                {session?.user?.email === location.createdBy && (
+                                {session?.user && (
                                     <div className="flex gap-2">
                                         {editingId === location._id ? (
                                             <button
@@ -213,12 +219,14 @@ export default function JamLocations() {
                                                 <FiEdit />
                                             </button>
                                         )}
-                                        <button
-                                            onClick={() => handleDeleteLocation(location._id)}
-                                            className="px-4 py-2 dark:text-white border-2 border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl hover:bg-red-500 transition-colors duration-300 ease-in-out"
-                                        >
-                                            <FiTrash />
-                                        </button>
+                                        {canDelete(location.createdBy) && (
+                                            <button
+                                                onClick={() => handleDeleteLocation(location._id)}
+                                                className="px-4 py-2 dark:text-white border-2 border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl hover:bg-red-500 transition-colors duration-300 ease-in-out"
+                                            >
+                                                <FiTrash />
+                                            </button>
+                                        )}
                                     </div>
                                 )}
                             </div>

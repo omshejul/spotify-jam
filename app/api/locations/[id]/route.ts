@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { connectToDatabase } from '../../../lib/mongodb'
 import { ObjectId } from 'mongodb'
+import { getServerSession } from 'next-auth'
+import { NextResponse } from 'next/server'
+import { connectToDatabase } from '../../../lib/mongodb'
 
 export async function PATCH(
   request: Request,
@@ -53,7 +53,6 @@ export async function DELETE(
 
     const { db } = await connectToDatabase()
     
-    // Only allow deletion by the creator
     const location = await db.collection('locations').findOne({ 
       _id: new ObjectId(id)
     })
@@ -62,7 +61,9 @@ export async function DELETE(
       return NextResponse.json({ error: 'Location not found' }, { status: 404 })
     }
 
-    if (location.createdBy !== session.user?.email) {
+    // Allow both creator and admin to delete
+    if (location.createdBy !== session.user?.email && 
+        session.user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 

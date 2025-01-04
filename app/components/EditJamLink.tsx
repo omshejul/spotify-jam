@@ -45,7 +45,7 @@ export default function EditJamLink({ locationId, jamLink, createdBy }: EditJamL
         }
     }
 
-    if (!session?.user?.email || session.user.email !== createdBy) {
+    if (!session?.user) {
         return null
     }
 
