@@ -1,6 +1,7 @@
 import BottomNav from '@/app/components/BottomNav'
 import EditJamLink from '@/app/components/EditJamLink'
 import TimeDisplay from '@/app/components/TimeDisplay'
+import Tooltip from '@/app/components/Tooltip'
 import { connectToDatabase } from '@/app/lib/mongodb'
 import { ObjectId } from 'mongodb'
 import Image from 'next/image'
@@ -65,7 +66,10 @@ export default async function LocationPage({ params }: PageProps) {
     return (<div className="flex flex-col items-center justify-between min-h-svh p-6">
         <div className="container mx-auto px-4 max-w-2xl">
             <div className="bg-white dark:bg-black p-6 rounded-2xl border border-solid border-black/[.08] dark:border-white/[.145]">
-                <h1 className="text-3xl font-bold mb-4">{locationData.name}</h1>
+                <div className="flex justify-between items-center mb-4">
+                    <h1 className="text-3xl font-bold">{locationData.name}</h1>
+                    <Tooltip />
+                </div>
 
                 <div className="space-y-4">
                     <div>
