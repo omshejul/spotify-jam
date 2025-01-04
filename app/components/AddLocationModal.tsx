@@ -41,7 +41,7 @@ export default function AddLocationModal({ isOpen, onClose, onSubmit, isSubmitti
       setName('')
       setJamLink('')
     } catch (error) {
-      setError('Failed to add location')
+      setError(`Failed to add location. ${error}`)
     }
   }
 
