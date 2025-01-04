@@ -1,5 +1,6 @@
 import BottomNav from '@/app/components/BottomNav'
 import EditJamLink from '@/app/components/EditJamLink'
+import TimeDisplay from '@/app/components/TimeDisplay'
 import { connectToDatabase } from '@/app/lib/mongodb'
 import { ObjectId } from 'mongodb'
 import Image from 'next/image'
@@ -114,19 +115,14 @@ export default async function LocationPage({ params }: PageProps) {
                     <div>
                         <h2 className="text-xl font-semibold mb-2">Last Updated</h2>
                         <p>
-                            By {location.updatedByName} on{' '}
-                            {new Date(location.updatedAt).toLocaleDateString()}{' '}
-                            at{' '}
-                            {new Date(location.updatedAt).toLocaleTimeString('en-US', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                            })}
+                            By {locationData.updatedByName} on{' '}
+                            <TimeDisplay date={locationData.updatedAt} />
                         </p>
                     </div>
                 </div>
             </div>
         </div>
-        <div className=" grid place-items-center w-full container mx-auto px-4 max-w-2xl">
+        <div className="grid place-items-center w-full container mx-auto px-4 max-w-2xl">
             <BottomNav />
         </div>
     </div>)
