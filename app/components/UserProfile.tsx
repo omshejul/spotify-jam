@@ -7,7 +7,7 @@ export default function UserProfile() {
   const { data: session } = useSession()
 
   return (
-    <div className="flex items-center p-6 justify-between w-full rounded-2xl border border-gray-200 dark:border-gray-800">
+    <div className="flex items-center p-6 justify-between w-full rounded-2xl border border-solid border-black/[.08] dark:border-white/[.145]">
       <div className="flex items-center gap-4">
         {session?.user?.image && (
           <Image
