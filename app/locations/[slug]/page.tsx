@@ -65,12 +65,12 @@ export default async function LocationPage({ params }: PageProps) {
         <div className="container mx-auto px-4 max-w-2xl">
             <div className="bg-white dark:bg-black p-6 rounded-2xl border border-solid border-black/[.08] dark:border-white/[.145]">
                 <h1 className="text-3xl font-bold mb-4">{locationData.name}</h1>
-                
+
                 <div className="space-y-4">
                     <div>
                         <h2 className="text-xl font-semibold mb-2">Jam Link</h2>
                         <div className="flex flex-col">
-                            <a 
+                            <a
                                 href={locationData.jamLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -78,7 +78,7 @@ export default async function LocationPage({ params }: PageProps) {
                             >
                                 {locationData.jamLink} <FiExternalLink />
                             </a>
-                            <EditJamLink 
+                            <EditJamLink
                                 locationId={locationData._id}
                                 jamLink={locationData.jamLink}
                                 createdBy={locationData.createdBy}
@@ -92,7 +92,7 @@ export default async function LocationPage({ params }: PageProps) {
                             <div className="flex flex-col justify-center items-center">
                                 <div className="bg-white dark:bg-black">
                                     <Image
-                                        src={qrCodeDataUrl} 
+                                        src={qrCodeDataUrl}
                                         alt="QR Code for jam link"
                                         width={192}
                                         height={192}
@@ -113,26 +113,18 @@ export default async function LocationPage({ params }: PageProps) {
 
                     <div>
                         <h2 className="text-xl font-semibold mb-2">Last Updated</h2>
-                       <p>
-    By {location.updatedByName} on{' '}
-    {new Date(location.updatedAt).toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    })}{' '}
-    at{' '}
-    {new Date(location.updatedAt).toLocaleTimeString(undefined, {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-    })}
-</p>
+                        <p>
+                            By {location.updatedByName} on{' '}
+                            {new Date(location.updatedAt).toLocaleDateString()}{' '}
+                            at{' '}
+                            {new Date(location.updatedAt).toLocaleTimeString()}
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
         <div className=" grid place-items-center w-full container mx-auto px-4 max-w-2xl">
-        <BottomNav />
+            <BottomNav />
         </div>
     </div>)
 } 
