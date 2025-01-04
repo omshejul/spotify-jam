@@ -13,19 +13,41 @@ interface AddLocationModalProps {
 export default function AddLocationModal({ isOpen, onClose, onSubmit, isSubmitting }: AddLocationModalProps) {
   const [name, setName] = useState('')
   const [jamLink, setJamLink] = useState('')
+  const [error, setError] = useState('')
 
   if (!isOpen) return null
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    await onSubmit(name, jamLink)
-    setName('')
-    setJamLink('')
+    setError('')
+
+    try {
+      // Check for duplicate name
+      const checkResponse = await fetch('/api/locations/check-duplicate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name })
+      })
+
+      const { exists } = await checkResponse.json()
+
+      if (exists) {
+        setError('A location with this name already exists')
+        return
+      }
+
+      // If no duplicate, proceed with submission
+      await onSubmit(name, jamLink)
+      setName('')
+      setJamLink('')
+    } catch (error) {
+      setError('Failed to add location')
+    }
   }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white border border-solid border-black/[.08] dark:border-white/[.145]  dark:bg-black w-full max-w-md rounded-2xl p-6 space-y-4 relative">
+      <div className="bg-white border border-solid border-black/[.08] dark:border-white/[.145] dark:bg-black w-full max-w-md rounded-2xl p-6 space-y-4 relative">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
@@ -36,6 +58,12 @@ export default function AddLocationModal({ isOpen, onClose, onSubmit, isSubmitti
         <h2 className="text-xl font-semibold">Add New Location</h2>
         
         <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="p-4 text-red-700 bg-red-100 dark:bg-red-900/50 rounded-2xl">
+              {error}
+            </div>
+          )}
+          
           <div className="space-y-2">
             <input
               type="text"
