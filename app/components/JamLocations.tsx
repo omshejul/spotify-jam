@@ -216,8 +216,7 @@ export default function JamLocations() {
                                 {new Date(location.updatedAt).toLocaleDateString()} at{' '}
                                 {new Date(location.updatedAt).toLocaleTimeString('en-US', {
                                     hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: false
+                                    minute: '2-digit'
                                 })}
                             </p>
                         </div>

@@ -117,7 +117,10 @@ export default async function LocationPage({ params }: PageProps) {
                             By {location.updatedByName} on{' '}
                             {new Date(location.updatedAt).toLocaleDateString()}{' '}
                             at{' '}
-                            {new Date(location.updatedAt).toLocaleTimeString()}
+                            {new Date(location.updatedAt).toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            })}
                         </p>
                     </div>
                 </div>
