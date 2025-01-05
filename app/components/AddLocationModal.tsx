@@ -1,5 +1,6 @@
 'use client'
 
+import { containsInappropriateContent } from '@/app/lib/contentFilter'
 import { useState } from 'react'
 import { FiX } from 'react-icons/fi'
 
@@ -21,6 +22,12 @@ export default function AddLocationModal({ isOpen, onClose, onSubmit, isSubmitti
     e.preventDefault()
     setError('')
 
+    // Check for inappropriate content
+    if (containsInappropriateContent(name)) {
+      setError('Please choose an appropriate name')
+      return
+    }
+
     try {
       // Check for duplicate name
       const checkResponse = await fetch('/api/locations/check-duplicate', {
@@ -36,7 +43,7 @@ export default function AddLocationModal({ isOpen, onClose, onSubmit, isSubmitti
         return
       }
 
-      // If no duplicate, proceed with submission
+      // If no duplicate and content is appropriate, proceed with submission
       await onSubmit(name, jamLink)
       setName('')
       setJamLink('')

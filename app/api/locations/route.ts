@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server'
+import { containsInappropriateContent } from '@/app/lib/contentFilter'
 import { getServerSession } from 'next-auth'
+import { NextResponse } from 'next/server'
 import { connectToDatabase } from '../../lib/mongodb'
 
 export async function GET() {
@@ -17,18 +18,18 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const session = await getServerSession()
-    if (!session) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { name, jamLink, createdBy, createdByName } = await request.json()
-    
-    // Validate required fields
-    if (!name || !jamLink || !createdBy || !createdByName) {
-      return NextResponse.json({ 
-        error: 'Missing required fields', 
-        received: { name, jamLink, createdBy, createdByName } 
-      }, { status: 400 })
+    const { name, jamLink } = await request.json()
+
+    // Server-side content check
+    if (containsInappropriateContent(name)) {
+      return NextResponse.json(
+        { error: 'Inappropriate content detected' }, 
+        { status: 400 }
+      )
     }
 
     const { db } = await connectToDatabase()
@@ -36,10 +37,10 @@ export async function POST(request: Request) {
     const location = {
       name,
       jamLink,
-      createdBy,
-      createdByName,
-      updatedBy: createdBy,
-      updatedByName: createdByName,
+      createdBy: session.user.email,
+      createdByName: session.user.name,
+      updatedBy: session.user.email,
+      updatedByName: session.user.name,
       updatedAt: new Date(),
     }
 
