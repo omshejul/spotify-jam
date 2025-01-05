@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { FiEdit, FiExternalLink, FiLoader, FiPlusCircle, FiSave, FiTrash, FiX } from 'react-icons/fi'
+import { FiEdit, FiExternalLink, FiLoader, FiPlusCircle, FiSave, FiSearch, FiTrash, FiX } from 'react-icons/fi'
 import { JamLocation } from '../types/types'
 import AddLocationModal from './AddLocationModal'
 
@@ -19,6 +19,7 @@ export default function JamLocations() {
     const router = useRouter()
     const [loadingLocation, setLoadingLocation] = useState<string | null>(null)
     const [isAdmin, setIsAdmin] = useState(false)
+    const [searchQuery, setSearchQuery] = useState('')
 
     useEffect(() => {
         const fetchLocations = async () => {
@@ -145,6 +146,10 @@ export default function JamLocations() {
         return session.user.email === createdBy || isAdmin
     }
 
+    const filteredLocations = locations.filter(location => 
+        location.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
     return (
         <>
             <div className="w-full max-w-2xl space-y-6">
@@ -165,91 +170,108 @@ export default function JamLocations() {
                     </>
                 )}
 
+                <div className="relative">
+                    <input
+                        type="text"
+                        placeholder="Search locations..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full p-3 px-4 pr-10 border border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl dark:bg-black"
+                    />
+                    <FiSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                </div>
+
                 <div className="space-y-4">
-                    {locations.map((location) => (
-                        <div
-                            key={location._id}
-                            className="p-4 border rounded-2xl border-solid border-black/[.08] dark:border-white/[.145] space-y-2"
-                        >
-                            <button 
-                                onClick={() => handleLocationClick(location.name)}
-                                className="hover:text-blue-500 transition-colors flex items-center gap-2"
-                                disabled={loadingLocation === location.name}
+                    {filteredLocations.length === 0 ? (
+                        <div className="text-center p-4 text-gray-500">
+                            No locations found
+                        </div>
+                    ) : (
+                        filteredLocations.map((location) => (
+                            <div
+                                key={location._id}
+                                className="p-4 border rounded-2xl border-solid border-black/[.08] dark:border-white/[.145] space-y-2"
                             >
-                                <h3 className="text-lg font-semibold">{location.name}</h3>
-                                {loadingLocation === location.name && (
-                                    <FiLoader className="w-4 h-4 animate-spin" />
-                                )}
-                            </button>
-                            <div className="flex justify-between gap-2">
-                                {editingId !== location._id ? (
-                                    <a
-                                        href={location.jamLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center justify-center p-3 px-4 rounded-2xl border border-solid border-black/[.08] dark:border-white/[.145] text-blue-500 hover:text-blue-700"
-                                    >
-                                        {location.jamLink.length > 25 ? `${location.jamLink.replace('https://', '').substring(0, 25)}...` : location.jamLink.replace('https://', '')} <FiExternalLink />
-                                    </a>
-                                ) : (
-                                    <div className="flex gap-2 items-center justify-between w-full">
-                                        <input
-                                            type="url"
-                                            value={location.jamLink}
-                                            onChange={(e) => {
-                                                const newLocations = locations.map(loc =>
-                                                    loc._id === location._id ? { ...loc, jamLink: e.target.value } : loc
-                                                )
-                                                setLocations(newLocations)
-                                            }}
-                                            className="flex-1 p-3 px-4 border rounded-2xl dark:bg-black dark:border-gray-700"
-                                        />
-                                        <button
-                                            onClick={() => setEditingId(null)}
-                                            className="px-4 py-2 dark:text-white border-2 border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl hover:bg-red-500 transition-colors duration-300 ease-in-out"
+                                <button 
+                                    onClick={() => handleLocationClick(location.name)}
+                                    className="hover:text-blue-500 transition-colors flex items-center gap-2"
+                                    disabled={loadingLocation === location.name}
+                                >
+                                    <h3 className="text-lg font-semibold">{location.name}</h3>
+                                    {loadingLocation === location.name && (
+                                        <FiLoader className="w-4 h-4 animate-spin" />
+                                    )}
+                                </button>
+                                <div className="flex justify-between gap-2">
+                                    {editingId !== location._id ? (
+                                        <a
+                                            href={location.jamLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center justify-center p-3 px-4 rounded-2xl border border-solid border-black/[.08] dark:border-white/[.145] text-blue-500 hover:text-blue-700"
                                         >
-                                            <FiX />
-                                        </button>
-                                    </div>
-                                )}
-                                {session?.user && (
-                                    <div className="flex gap-2">
-                                        {editingId === location._id ? (
+                                            {location.jamLink.length > 25 ? `${location.jamLink.replace('https://', '').substring(0, 25)}...` : location.jamLink.replace('https://', '')} <FiExternalLink />
+                                        </a>
+                                    ) : (
+                                        <div className="flex gap-2 items-center justify-between w-full">
+                                            <input
+                                                type="url"
+                                                value={location.jamLink}
+                                                onChange={(e) => {
+                                                    const newLocations = locations.map(loc =>
+                                                        loc._id === location._id ? { ...loc, jamLink: e.target.value } : loc
+                                                    )
+                                                    setLocations(newLocations)
+                                                }}
+                                                className="flex-1 p-3 px-4 border rounded-2xl dark:bg-black dark:border-gray-700"
+                                            />
                                             <button
-                                                onClick={() => handleUpdateJamLink(location._id, location.jamLink)}
-                                                className="px-4 py-2 dark:text-white border-2 border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl hover:bg-green-500 transition-colors duration-300 ease-in-out"
-                                            >
-                                                <FiSave />
-                                            </button>
-                                        ) : (
-                                            <button
-                                                onClick={() => setEditingId(location._id)}
-                                                className="px-4 py-2 dark:text-white border-2 border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl hover:bg-sky-500 transition-colors duration-300 ease-in-out"
-                                            >
-                                                <FiEdit />
-                                            </button>
-                                        )}
-                                        {canDelete(location.createdBy) && (
-                                            <button
-                                                onClick={() => handleDeleteLocation(location._id)}
+                                                onClick={() => setEditingId(null)}
                                                 className="px-4 py-2 dark:text-white border-2 border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl hover:bg-red-500 transition-colors duration-300 ease-in-out"
                                             >
-                                                <FiTrash />
+                                                <FiX />
                                             </button>
-                                        )}
-                                    </div>
-                                )}
+                                        </div>
+                                    )}
+                                    {session?.user && (
+                                        <div className="flex gap-2">
+                                            {editingId === location._id ? (
+                                                <button
+                                                    onClick={() => handleUpdateJamLink(location._id, location.jamLink)}
+                                                    className="px-4 py-2 dark:text-white border-2 border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl hover:bg-green-500 transition-colors duration-300 ease-in-out"
+                                                >
+                                                    <FiSave />
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => setEditingId(location._id)}
+                                                    className="px-4 py-2 dark:text-white border-2 border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl hover:bg-sky-500 transition-colors duration-300 ease-in-out"
+                                                >
+                                                    <FiEdit />
+                                                </button>
+                                            )}
+                                            {canDelete(location.createdBy) && (
+                                                <button
+                                                    onClick={() => handleDeleteLocation(location._id)}
+                                                    className="px-4 py-2 dark:text-white border-2 border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl hover:bg-red-500 transition-colors duration-300 ease-in-out"
+                                                >
+                                                    <FiTrash />
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                                <p className="text-sm text-gray-500">
+                                    Last updated by {location.updatedByName} on{' '}
+                                    {new Date(location.updatedAt).toLocaleDateString()} at{' '}
+                                    {new Date(location.updatedAt).toLocaleTimeString('en-US', {
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                </p>
                             </div>
-                            <p className="text-sm text-gray-500">
-                                Last updated by {location.updatedByName} on{' '}
-                                {new Date(location.updatedAt).toLocaleDateString()} at{' '}
-                                {new Date(location.updatedAt).toLocaleTimeString('en-US', {
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                })}
-                            </p>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
             </div>
             <AddLocationModal
