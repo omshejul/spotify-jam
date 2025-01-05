@@ -47,7 +47,7 @@ export async function DELETE(
   const { id } = await params
   try {
     const session = await getServerSession()
-    if (!session) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -62,8 +62,8 @@ export async function DELETE(
     }
 
     // Allow both creator and admin to delete
-    if (location.createdBy !== session.user?.email && 
-        session.user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+    if (location.createdBy !== session.user.email && 
+        session.user.email !== process.env.ADMIN_EMAIL) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
