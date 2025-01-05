@@ -64,7 +64,7 @@ export default async function LocationPage({ params }: PageProps) {
     const qrCodeDataUrl = await generateQR(locationData.jamLink)
 
     return (<div className="flex flex-col items-center justify-between min-h-svh p-6">
-        <div className="container mx-auto px-4 max-w-2xl">
+        <div className="container mx-auto max-w-2xl">
             <div className="bg-white dark:bg-black p-6 rounded-2xl border border-solid border-black/[.08] dark:border-white/[.145]">
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-3xl font-bold">{locationData.name}</h1>
@@ -126,7 +126,7 @@ export default async function LocationPage({ params }: PageProps) {
                 </div>
             </div>
         </div>
-        <div className="grid place-items-center w-full container mx-auto px-4 max-w-2xl">
+        <div className="grid place-items-center w-full container mx-auto max-w-2xl">
             <BottomNav />
         </div>
     </div>)

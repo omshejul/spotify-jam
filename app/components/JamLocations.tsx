@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { FiEdit, FiExternalLink, FiLoader, FiPlusCircle, FiSave, FiSearch, FiTrash, FiX } from 'react-icons/fi'
 import { JamLocation } from '../types/types'
 import AddLocationModal from './AddLocationModal'
+import TimeDisplay from './TimeDisplay'
 
 export default function JamLocations() {
     const { data: session } = useSession()
@@ -263,11 +264,7 @@ export default function JamLocations() {
                                 </div>
                                 <p className="text-sm text-gray-500">
                                     Last updated by {location.updatedByName} on{' '}
-                                    {new Date(location.updatedAt).toLocaleDateString()} at{' '}
-                                    {new Date(location.updatedAt).toLocaleTimeString('en-US', {
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                    })}
+                                    <TimeDisplay date={new Date(location.updatedAt)} />
                                 </p>
                             </div>
                         ))
@@ -279,6 +276,7 @@ export default function JamLocations() {
                 onClose={() => setIsModalOpen(false)}
                 onSubmit={handleAddLocation}
                 isSubmitting={isSubmitting}
-            /></>
+            />
+        </>
     )
 }
