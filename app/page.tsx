@@ -1,10 +1,10 @@
 'use client'
 
 import { useSession } from "next-auth/react"
+import { FiLoader } from 'react-icons/fi'
+import JamLocations from "./components/JamLocations"
 import LoginButton from "./components/LoginButton"
 import UserProfile from "./components/UserProfile"
-import JamLocations from "./components/JamLocations"
-import { FiLoader } from 'react-icons/fi'
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -18,20 +18,16 @@ export default function Home() {
   }
 
   return (
-    <div className="grid min-h-svh place-items-center">
-      <main className="flex flex-col justify-between min-h-svh p-4 items-center gap-8 w-full max-w-2xl">
-        {session ? (
-          <>
-            <JamLocations />
-            <UserProfile />
-          </>
-        ) : (
-          <>
-            <JamLocations />
-            <LoginButton />
-          </>
-        )}
+    <div className="flex flex-col min-h-svh">
+      <main className="flex-1 p-4 container mx-auto max-w-2xl">
+        <JamLocations />
       </main>
+      
+      <div className="sticky bottom-0 w-full  py-4">
+        <div className="container mx-auto max-w-2xl px-4 flex justify-center">
+          {session ? <UserProfile /> : <LoginButton />}
+        </div>
+      </div>
     </div>
   )
 }
