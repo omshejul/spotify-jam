@@ -21,6 +21,7 @@ export default function JamLocations() {
     const [loadingLocation, setLoadingLocation] = useState<string | null>(null)
     const [isAdmin, setIsAdmin] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
+    const [deletingId, setDeletingId] = useState<string | null>(null)
 
     useEffect(() => {
         const fetchLocations = async () => {
@@ -124,6 +125,7 @@ export default function JamLocations() {
 
         if (!confirm('Are you sure you want to delete this location?')) return
 
+        setDeletingId(locationId)
         try {
             const response = await fetch(`/api/locations/${locationId}`, {
                 method: 'DELETE',
@@ -134,6 +136,8 @@ export default function JamLocations() {
             }
         } catch (error) {
             console.error('Failed to delete location:', error)
+        } finally {
+            setDeletingId(null)
         }
     }
 
@@ -254,9 +258,14 @@ export default function JamLocations() {
                                             {canDelete(location.createdBy) && (
                                                 <button
                                                     onClick={() => handleDeleteLocation(location._id)}
+                                                    disabled={deletingId === location._id}
                                                     className="px-4 py-2 dark:text-white border-2 border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl hover:bg-red-500 transition-colors duration-300 ease-in-out"
                                                 >
-                                                    <FiTrash />
+                                                    {deletingId === location._id ? (
+                                                        <FiLoader className="w-5 h-5 animate-spin" />
+                                                    ) : (
+                                                        <FiTrash />
+                                                    )}
                                                 </button>
                                             )}
                                         </div>
