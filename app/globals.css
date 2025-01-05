@@ -19,9 +19,21 @@ body {
   background: var(--background);
   font-family: var(--font-figtree), system-ui, sans-serif;
 }
+
+/* Prevent zoom on focus */
+input, textarea, select {
+  font-size: 16px !important;  /* Minimum font size to prevent zoom on iOS */
+}
+
 @media (max-width: 768px) {
   :root {
     font-size: 0.85rem;
+  }
+  
+  /* Additional mobile-specific input styles */
+  input, textarea, select {
+    font-size: 16px !important;
+    touch-action: manipulation;
   }
 }
 
