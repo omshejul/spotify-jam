@@ -21,6 +21,12 @@ const figtree = Figtree({
 export const metadata: Metadata = {
   title: "Spotify Jam Links",
   description: "Share and manage Spotify Jam links for different locations",
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
 };
 
 export default function RootLayout({
