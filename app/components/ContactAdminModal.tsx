@@ -1,7 +1,9 @@
 'use client'
 
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { FiLoader, FiX } from 'react-icons/fi'
+import LoginButton from './LoginButton'
 
 interface ContactAdminModalProps {
     isOpen: boolean
@@ -14,6 +16,7 @@ type Status = {
 }
 
 export default function ContactAdminModal({ isOpen, onClose }: ContactAdminModalProps) {
+    const { data: session } = useSession()
     const [message, setMessage] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [status, setStatus] = useState<Status>({ type: null, message: null })
@@ -57,7 +60,12 @@ export default function ContactAdminModal({ isOpen, onClose }: ContactAdminModal
 
                 <h2 className="text-xl font-semibold">Contact Admin</h2>
 
-                {isSubmitting || status.message ? (
+                {!session ? (
+                    <div className="min-h-[200px] flex flex-col items-center justify-center gap-4">
+                        <p className="text-center text-gray-500">Please sign in to contact admin</p>
+                        <LoginButton />
+                    </div>
+                ) : isSubmitting || status.message ? (
                     <div className="min-h-[200px] flex items-center justify-center">
                         {isSubmitting ? (
                             <FiLoader className="w-8 h-8 animate-spin text-blue-500" />
