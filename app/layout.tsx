@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Figtree, Geist, Geist_Mono } from "next/font/google"
 import Providers from './components/Providers'
 import "./globals.css"
@@ -21,13 +21,13 @@ const figtree = Figtree({
 export const metadata: Metadata = {
   title: "Spotify Jam Links",
   description: "Share and manage Spotify Jam links for different locations",
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
-};
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+}
 
 export default function RootLayout({
   children,
