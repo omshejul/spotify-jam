@@ -39,7 +39,7 @@ export default function ContactAdminModal({ isOpen, onClose }: ContactAdminModal
                 setStatus({ type: 'error', message: 'Failed to send message' })
             }
         } catch (error) {
-            setStatus({ type: 'error', message: 'Failed to send message' })
+            setStatus({ type: 'error', message: 'Failed to send message: ' + error })
         } finally {
             setIsSubmitting(false)
         }
