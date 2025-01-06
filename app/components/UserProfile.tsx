@@ -2,9 +2,17 @@
 
 import { signOut, useSession } from "next-auth/react"
 import Image from "next/image"
+import { useState } from "react"
+import { FiLoader } from "react-icons/fi"
 
 export default function UserProfile() {
   const { data: session } = useSession()
+  const [isSigningOut, setIsSigningOut] = useState(false)
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true)
+    await signOut()
+  }
 
   return (
     <div className="flex items-center backdrop-blur p-6 justify-between w-full rounded-2xl border border-solid border-black/[.08] dark:border-white/[.145]">
@@ -27,10 +35,18 @@ export default function UserProfile() {
         </div>
       </div>
       <button
-        className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-        onClick={() => signOut()}
+        className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 gap-2"
+        onClick={handleSignOut}
+        disabled={isSigningOut}
       >
-        Sign Out
+        {isSigningOut ? (
+          <>
+            <FiLoader className="w-4 h-4 animate-spin" />
+            Signing out...
+          </>
+        ) : (
+          'Sign Out'
+        )}
       </button>
     </div>
   )
