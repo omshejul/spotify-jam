@@ -18,14 +18,27 @@ export default function AddLocationModal({ isOpen, onClose, onSubmit, isSubmitti
 
   if (!isOpen) return null
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    // Prevent double spaces by replacing multiple spaces with single space
+    const cleanValue = value.replace(/\s+/g, ' ')
+    
+    if (cleanValue && !/^[a-zA-Z0-9\s]+$/.test(cleanValue)) {
+      setError('Location name can only contain letters, numbers, and spaces')
+    } else {
+      setError('')
+    }
+    setName(cleanValue)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
     // Check for inappropriate content
     if (containsInappropriateContent(name)) {
-      setError('Please choose an appropriate name')
-      return
+        setError('Please choose an appropriate name')
+        return
     }
 
     try {
@@ -76,8 +89,10 @@ export default function AddLocationModal({ isOpen, onClose, onSubmit, isSubmitti
               type="text"
               placeholder="Location name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full p-3 px-4 border border-solid border-black/[.08] dark:border-white/[.145] rounded-2xl dark:bg-black"
+              onChange={handleNameChange}
+              className={`w-full p-3 px-4 border border-solid ${
+                error ? 'border-red-500' : 'border-black/[.08] dark:border-white/[.145]'
+              } rounded-2xl dark:bg-black`}
               required
               disabled={isSubmitting}
             />

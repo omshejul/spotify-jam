@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { FiEdit, FiExternalLink, FiLoader, FiPlusCircle, FiSave, FiSearch, FiTrash, FiX } from 'react-icons/fi'
 import { JamLocation } from '../types/types'
 import AddLocationModal from './AddLocationModal'
