@@ -3,12 +3,29 @@ import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
 import { connectToDatabase } from '../../lib/mongodb'
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url)
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '10')
+    const skip = (page - 1) * limit
+
     const { db } = await connectToDatabase()
-    const locations = await db.collection('locations').find().toArray()
     
-    return NextResponse.json(locations)
+    const [locations, total] = await Promise.all([
+        db.collection('locations')
+            .find()
+            .sort({ updatedAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .toArray(),
+        db.collection('locations').countDocuments()
+    ])
+
+    return NextResponse.json({
+        locations,
+        hasMore: skip + locations.length < total
+    })
   } catch (error) {
     console.error('GET Error:', error)
     return NextResponse.json({ error: 'Failed to fetch locations' }, { status: 500 })
